@@ -100,7 +100,7 @@
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
-                Our <span>products</span>
+                Our <span>products are good</span>
             </h2>
         </div>
         <div class="row" id="productContainer">
