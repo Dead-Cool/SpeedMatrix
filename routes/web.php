@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\ModelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -20,14 +22,20 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Route::view('/product', 'product.productcreate');
-// Route::view('/index', 'product.index');
+Route::resource('products', ProductController::class);
+Route::get('/get-models/{carId}', [ProductController::class, 'getModels']);
 
-// Route::get('/products', [ProductController::class, 'index']);
+//Car Routes
+Route::get('/cars', [CarController::class, 'index'])->name('car.create');
+Route::post('/cars', [CarController::class, 'store'])->name('car.store');
+Route::get('/cars/delete/{id}', [CarController::class, 'delete'])->name('car.delete');
+Route::get('/cars/edit/{id}', [CarController::class, 'edit'])->name('car.edit');
+Route::post('/cars/update/{id}', [CarController::class, 'update'])->name('car.update');
 
-Route::controller(ProductController::class)->group(function () {
-    Route::get('/products', 'index')->name('product.index');
-    Route::get('/add', 'add');
-    Route::get('/create', 'create');
-    Route::post('/create', 'create')->name('product.store');
-});
+//Model Routes
+Route::get('/models', [ModelController::class, 'index'])->name('model.index');
+Route::post('/models', [ModelController::class, 'store'])->name('model.store');
+Route::get('/model/delete/{id}', [ModelController::class, 'delete'])->name('model.delete');
+Route::get('/model/edit/{id}', [ModelController::class, 'edit'])->name('model.edit');
+Route::post('/model/update/{id}', [ModelController::class, 'update'])->name('model.update');
+Route::get('/get/models', [ModelController::class, 'getModelsByCar']);

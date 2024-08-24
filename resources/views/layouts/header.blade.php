@@ -10,7 +10,7 @@
       <!-- bootstrap core css -->
       <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.css')}}" />
       <!-- font awesome style -->
-      <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
       <!-- Custom styles for this template -->
       <link href="{{asset('css/style.css')}}" rel="stylesheet" />
       <!-- responsive style -->
@@ -23,7 +23,7 @@
         <header class="header_section">
             <div class="container">
                 <nav class="navbar navbar-expand-lg custom_nav-container">
-                    <a class="navbar-brand" href="index.html"> <p class="h3">Add Logo (img)</p></a>
+                    <a class="navbar-brand" href="index.html"><img src="{{asset('images/car logo.jpg')}}" alt="" height="80px" width="100px" style="border-radius: 50%"></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class=""> </span>
                     </button>

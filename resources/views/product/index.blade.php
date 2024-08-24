@@ -100,7 +100,7 @@
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
-                Our <span>products are good</span>
+                Our <span>products</span>
             </h2>
         </div>
         <div class="row" id="productContainer">
@@ -109,18 +109,22 @@
             <div class="col-sm-6 col-md-4 col-lg-3 product">
                 <div class="box">
                     <div class="img-box">
-                        <img src="{{ asset('photos/products' . $product->photo) }}" alt="{{ $product->title }}">
+                        <img src="{{ asset('storage/photos/products/' . $product->photo) }}" alt="{{ $product->title }}">
                     </div>
                     <div class="detail-box">
                         <h5>{{ $product->title }}</h5>
-                        <h6>${{ $product->price }}</h6>
-                        <p>{{ $product->description }}</p>
+                        <h6>Rs {{ $product->price }}</h6>
                         <div class="option_container">
                             <div class="options">
-                                <a href="#" class="option1">
-                                    Add To Cart
-                                </a>
-                                <a href="#" class="option2">
+                                <!-- Delete Form -->
+                                    <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="option1">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <a href="#" class="option2">
                                     Buy Now
                                 </a>
                             </div>

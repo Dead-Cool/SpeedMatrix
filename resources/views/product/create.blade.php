@@ -1,51 +1,148 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Add Products</title>
-</head>
-<body> --}}
-    @extends('layouts.main')
-    @section('main-section')
-        
-    <h1 class="text-center">Create Product</h1>
-    
+@include('layouts.header')
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif        
+
+<h1 class="text-center">Create Product</h1>
+
 @if ($errors->any())
     <div>
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
-                @endforeach
+            @endforeach
         </ul>
     </div>
-    @endif
-    <div class="container">
-    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+@endif
+
+<div class="container">
+    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <div class="form-group">
-            <label for="">Photo</label>
-            <input type="file" class="form-control-file" name="photo" id="photo" >
+
+        <div class="container mb-3">
+            <div class="row">
+                <!-- Image Card Column -->
+                <div class="col-lg-4">
+                    <label class="font-weight-bold" for=""><i class="fa fa-image"></i> Add Photo</label>
+                    <div class="card">
+                        <div style="height: 190px; width: 100%;">
+                            <img src="" id="preview" style="display: none" height="100%" width="100%">
+                        </div>
+                        <div class="">
+                            <input type="file" class="form-control" name="photo" id="photo" accept="image/*">
+                            @error('photo')
+                            <font color="red"><small>{{ $message }}</small></font>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Dropdowns Column -->
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        <label for="car" class="font-weight-bold"><i class="fa fa-car"></i> Car</label>
+                        <select class="form-control" name="car_id" id="car">
+                            <option value="" disabled selected>Select Car</option>
+                            @foreach($cars as $car)
+                                <option value="{{ $car->id }}">{{ $car->name }}</option>
+                            @endforeach
+                        </select>
+                        
+                        @error('car_id')
+                            <div class="text-danger"><small>{{ $message }}</small></div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model" class="font-weight-bold"><i class="fa fa-gears"></i> Model</label>
+                        <select class="form-control" name="model_id" id="model">
+                            <option value="" disabled selected>Select Model</option>
+                            <!-- Models will be populated here dynamically -->
+                        </select>
+                        
+                        @error('model_id')
+                            <div class="text-danger"><small>{{ $message }}</small></div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
         </div>
+        
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title" class="font-weight-bold"><i class="fa fa-pencil"></i> Title</label>
             <input type="text" name="title" id="title" class="form-control">
         </div>
+        
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description" class="font-weight-bold"><i class="fa fa-list"></i> Description</label>
             <textarea name="description" id="description" class="form-control"></textarea>
         </div>
+        
         <div class="form-group">
-            <label for="price">Price</label>
+            <label for="price" class="font-weight-bold"><i class="fa fa-dollar-sign"></i> Price</label>
             <input type="text" name="price" id="price" placeholder="Add Price" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">Create Product</button>
+        
+        <button type="submit" class="btn btn-outline-dark mb-5"><i class="fa fa-save"></i> Product</button>
     </form>
 </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-@endsection
-    {{-- </body>
-    </html> --}}
-    
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#car').change(function() {
+        var carId = $(this).val();
+        var modelSelect = $('#model');
+
+        // Clear existing options
+        modelSelect.html('<option value="" disabled selected>Select Model</option>');
+
+        if (carId) {
+            $.ajax({
+                url: '/get-models/' + carId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $.each(data.models, function(index, model) {
+                        modelSelect.append('<option value="' + model.id + '">' + model.model + '</option>');
+                    });
+                },
+                error: function(xhr) {
+                    console.log('Error:', xhr.responseText);
+                }
+            });
+        }
+    });
+
+    // Function to preview the selected image
+    function previewImage() {
+        const fileInput = document.getElementById('photo');
+        const preview = document.getElementById('preview');
+
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block'; // Show the preview
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none'; // Hide the preview if no image or non-image file
+            }
+        });
+    }
+
+    previewImage(); // Initialize the previewImage function
+});
+</script>
