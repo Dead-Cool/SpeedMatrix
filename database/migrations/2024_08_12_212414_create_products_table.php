@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->integer('price');
             $table->string('description');
-            $table->foreignId('car_id')->nullable()->constrained('cars');
-            $table->foreignId('model_id')->nullable()->constrained('models');
+            $table->unSignedBigInteger('car_id')->nullable();
+            $table->unSignedBigInteger('model_id')->nullable();
             $table->timestamps();
         });
     }

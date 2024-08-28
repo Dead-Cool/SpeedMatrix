@@ -29,7 +29,9 @@ class ProductController extends Controller
         if ($request->has('car_id')) {
             $models = Model::where('car_id', $request->input('car_id'))->get();
         }
-        return view ('product.create', compact('cars', 'models'));
+
+        $title = 'Create Product';
+        return view ('product.create', compact('cars', 'models', 'title'));
     }
 
     /**
@@ -38,6 +40,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'model_id' => 'required|exists:models,id',
             'photo' => 'nullable|image|max:1024',
             'title' => 'required|string|max:25',
             'price' => 'required|integer|',
@@ -68,9 +72,19 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        $product = Product::findOrfail($id);
+        // dd($products);
+        $cars = Cars::all();
+        $models = [];
+
+        if ($request->has('car_id')) {
+            $models = Model::where('car_id', $request->input('car_id'))->get();
+        }
+        $title = 'Update Product';
+        return view ('product.create', compact('cars', 'models', 'title', 'product'));
+    
     }
 
     /**
@@ -88,7 +102,14 @@ class ProductController extends Controller
     {
         $products = Product::findOrfail($id);
         $products->delete();
-        return redirect()->route('products.index', compact('products'))->with('success', 'Product deleted successfully!');
+        return redirect()->route('all.view')->with('success', 'Product deleted successfully!');
+    }
+
+    public function view()
+    {
+        // $cars = Cars::all();
+        $products = Product::with(['car', 'model'])->get();
+        return view('product.products', compact('products'));
     }
 
     public function getModels($carId)

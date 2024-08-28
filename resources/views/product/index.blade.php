@@ -116,14 +116,17 @@
                         <h6>Rs {{ $product->price }}</h6>
                         <div class="option_container">
                             <div class="options">
+                                <a href="#" class="option1">
+                                    View Product
+                                </a>
                                 <!-- Delete Form -->
-                                    <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" style="display:inline;">
+                                    {{-- <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="option1">
                                             Delete
                                         </button>
-                                    </form>
+                                    </form> --}}
                                     <a href="#" class="option2">
                                     Buy Now
                                 </a>

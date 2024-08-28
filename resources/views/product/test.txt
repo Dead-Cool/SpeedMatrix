@@ -6,7 +6,7 @@
     </div>
 @endif        
 
-<h1 class="text-center">{{ $title }} </h1>
+<h1 class="text-center">Create Product</h1>
 
 @if ($errors->any())
     <div>
@@ -29,11 +29,7 @@
                     <label class="font-weight-bold" for=""><i class="fa fa-image"></i> Add Photo</label>
                     <div class="card">
                         <div style="height: 190px; width: 100%;">
-                            @if (isset($product) && $product->photo)
-                                <img src="{{asset('storage/photos/products/' . $product->photo)}}" id="preview" style="height: 100%; width: 100%;" alt="{{$product->title}}">
-                            @else
-                                <img src="" id="preview" style="display: none" height="100%" width="100%">
-                            @endif
+                            <img src="" id="preview" style="display: none" height="100%" width="100%">
                         </div>
                         <div class="">
                             <input type="file" class="form-control" name="photo" id="photo" accept="image/*">
@@ -51,7 +47,7 @@
                         <select class="form-control" name="car_id" id="car">
                             <option value="" disabled selected>Select Car</option>
                             @foreach($cars as $car)
-                                <option value="{{ $car->id }}" {{ isset($product) && $product->car_id == $car->id ? 'selected' : '' }}>{{ $car->name }}</option>
+                                <option value="{{ $car->id }}">{{ $car->name }}</option>
                             @endforeach
                         </select>
 
@@ -76,20 +72,20 @@
         
         <div class="form-group">
             <label for="title" class="font-weight-bold"><i class="fa fa-pencil"></i> Title</label>
-            <input type="text" name="title" id="title" class="form-control" value="{{$product->title ?? ''}}">
+            <input type="text" name="title" id="title" class="form-control">
         </div>
         
         <div class="form-group">
             <label for="description" class="font-weight-bold"><i class="fa fa-list"></i> Description</label>
-            <textarea name="description" id="description" class="form-control">{{$product->description ?? ''}}</textarea>
+            <textarea name="description" id="description" class="form-control"></textarea>
         </div>
         
         <div class="form-group">
             <label for="price" class="font-weight-bold"><i class="fa fa-dollar-sign"></i> Price</label>
-            <input type="text" name="price" id="price" placeholder="Add Price" class="form-control"  value="{{$product->price ?? ''}}">
+            <input type="text" name="price" id="price" placeholder="Add Price" class="form-control">
         </div>
         
-        <button type="submit" class="btn btn-outline-dark mb-5"><i class="fa fa-save"></i> {{isset($product) ? ' Update' : ' Save'}}</button>
+        <button type="submit" class="btn btn-outline-dark mb-5"><i class="fa fa-save"></i> Product</button>
     </form>
 </div>
 
@@ -121,31 +117,6 @@ $(document).ready(function() {
             });
         }
     });
-
-// Initialize the models dropdown if a car is pre-selected
-var initialCarId = $('#car').val();
-    if (initialCarId) {
-        $.ajax({
-            url: '/get-models/' + initialCarId,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                var modelSelect = $('#model');
-                modelSelect.html('<option value="" disabled selected>Select Model</option>');
-                $.each(data.models, function(index, model) {
-                    modelSelect.append('<option value="' + model.id + '">' + model.model + '</option>');
-                });
-
-                // Set initial model value if available
-                if ('{{ isset($product->model_id) ? 'true' : 'false' }}') {
-                    modelSelect.val('{{ $product->model_id }}');
-                }
-            },
-            error: function(xhr) {
-                console.log('Error:', xhr.responseText);
-            }
-        });
-    }
 
     // Function to preview the selected image
     function previewImage() {

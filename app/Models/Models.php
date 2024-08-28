@@ -9,10 +9,16 @@ class Models extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['car_id', 'model'];
+    
     public function car()
     {
         return $this->belongsTo(Cars::class);
     }
 
-    protected $fillable = ['car_id', 'model'];
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+
 }
