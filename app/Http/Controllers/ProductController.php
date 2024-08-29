@@ -14,8 +14,15 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-        return view('product.index', compact('products'));
+        // Get all products with their related cars and models
+        $products = Product::with(['car', 'model'])->get();
+
+        // Group products by car
+        $groupedProducts = $products->groupBy(function ($product) {
+            return $product->car->name; // Assumes the `name` field of `Cars` is used for categorization
+        });
+
+        return view('product.index', compact('groupedProducts'));
     }
 
     /**
@@ -75,7 +82,6 @@ class ProductController extends Controller
     public function edit(string $id, Request $request)
     {
         $product = Product::findOrfail($id);
-        // dd($products);
         $cars = Cars::all();
         $models = [];
 
@@ -92,7 +98,26 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'model_id' => 'required|exists:models,id',
+            'photo' => 'nullable|image|max:1024',
+            'title' => 'required|string|max:25',
+            'price' => 'required|integer|',
+            'description' => 'required|string',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/photos/products', $filename);
+            $validatedData['photo'] = $filename; // Set the filename in the validated data
+        }
+
+        $product = Product::findOrfail($id);
+        $product->update($validatedData);
+        
+        return redirect()->route('all.view', compact('product'));
     }
 
     /**

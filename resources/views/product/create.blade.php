@@ -19,9 +19,11 @@
 @endif
 
 <div class="container">
-    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ isset($product) ? route('products.update', $product->id) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
+        @if(isset($product))
+            @method('PUT')
+        @endif
         <div class="container mb-3">
             <div class="row">
                 <!-- Image Card Column -->
@@ -97,80 +99,83 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#car').change(function() {
-        var carId = $(this).val();
-        var modelSelect = $('#model');
-
-        // Clear existing options
-        modelSelect.html('<option value="" disabled selected>Select Model</option>');
-
-        if (carId) {
+    $(document).ready(function() {
+        // Get initial model ID if available
+        var initialModelId = '{{ isset($product) ? $product->model_id : '' }}';
+        
+        $('#car').change(function() {
+            var carId = $(this).val();
+            var modelSelect = $('#model');
+    
+            // Clear existing options
+            modelSelect.html('<option value="" disabled selected>Select Model</option>');
+    
+            if (carId) {
+                $.ajax({
+                    url: '/get-models/' + carId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data.models, function(index, model) {
+                            modelSelect.append('<option value="' + model.id + '">' + model.model + '</option>');
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.responseText);
+                    }
+                });
+            }
+        });
+    
+        // Initialize the models dropdown if a car is pre-selected
+        var initialCarId = $('#car').val();
+        if (initialCarId) {
             $.ajax({
-                url: '/get-models/' + carId,
+                url: '/get-models/' + initialCarId,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    var modelSelect = $('#model');
+                    modelSelect.html('<option value="" disabled selected>Select Model</option>');
                     $.each(data.models, function(index, model) {
                         modelSelect.append('<option value="' + model.id + '">' + model.model + '</option>');
                     });
+    
+                    // Set initial model value if available
+                    if (initialModelId) {
+                        modelSelect.val(initialModelId);
+                    }
                 },
                 error: function(xhr) {
                     console.log('Error:', xhr.responseText);
                 }
             });
         }
-    });
-
-// Initialize the models dropdown if a car is pre-selected
-var initialCarId = $('#car').val();
-    if (initialCarId) {
-        $.ajax({
-            url: '/get-models/' + initialCarId,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                var modelSelect = $('#model');
-                modelSelect.html('<option value="" disabled selected>Select Model</option>');
-                $.each(data.models, function(index, model) {
-                    modelSelect.append('<option value="' + model.id + '">' + model.model + '</option>');
-                });
-
-                // Set initial model value if available
-                if ('{{ isset($product->model_id) ? 'true' : 'false' }}') {
-                    modelSelect.val('{{ $product->model_id }}');
+    
+        // Function to preview the selected image
+        function previewImage() {
+            const fileInput = document.getElementById('photo');
+            const preview = document.getElementById('preview');
+    
+            fileInput.addEventListener('change', function() {
+                const file = fileInput.files[0];
+                
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        preview.src = event.target.result;
+                        preview.style.display = 'block'; // Show the preview
+                    };
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none'; // Hide the preview if no image or non-image file
                 }
-            },
-            error: function(xhr) {
-                console.log('Error:', xhr.responseText);
-            }
-        });
-    }
-
-    // Function to preview the selected image
-    function previewImage() {
-        const fileInput = document.getElementById('photo');
-        const preview = document.getElementById('preview');
-
-        fileInput.addEventListener('change', function() {
-            const file = fileInput.files[0];
-            
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                
-                reader.onload = function(event) {
-                    preview.src = event.target.result;
-                    preview.style.display = 'block'; // Show the preview
-                };
-                
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none'; // Hide the preview if no image or non-image file
-            }
-        });
-    }
-
-    previewImage(); // Initialize the previewImage function
-});
+            });
+        }
+    
+        previewImage(); // Initialize the previewImage function
+    });
 </script>

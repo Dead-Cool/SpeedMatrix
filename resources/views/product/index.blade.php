@@ -96,7 +96,51 @@
         <!-- end slider section -->
     </div>
      <!-- product section -->
-<section class="product_section layout_padding">
+     <section class="product_section layout_padding">
+        <div class="container">
+            <div class="heading_container heading_center">
+                <h2>
+                    Our <span>products</span>
+                </h2>
+            </div>
+            
+            @foreach($groupedProducts as $carName => $products)
+                <h3 class="text-center mt-3">{{ $carName }}</h3>
+                <div class="row">
+                    @foreach($products as $product)
+                    <div class="col-sm-6 col-md-4 col-lg-3 product">
+                        <div class="box">
+                            <div class="img-box">
+                                <img src="{{ asset('storage/photos/products/' . $product->photo) }}" alt="{{ $product->title }}">
+                            </div>
+                            <div class="detail-box">
+                                <h5>{{ucfirst( $product->title) }}</h5>
+                                <h6>Rs {{ $product->price }}</h6>
+                                <div class="option_container">
+                                    <div class="options">
+                                        <a href="#" class="option1">
+                                            View Product
+                                        </a>
+                                        <a href="#" class="option2">
+                                            Buy Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @endforeach
+    
+            <div class="btn-box">
+                <a href="#">
+                    View All Products
+                </a>
+            </div>
+        </div>
+    </section>
+{{-- <section class="product_section layout_padding">
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
@@ -119,15 +163,7 @@
                                 <a href="#" class="option1">
                                     View Product
                                 </a>
-                                <!-- Delete Form -->
-                                    {{-- <form action="{{ route('products.destroy', ['product' => $product->id]) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="option1">
-                                            Delete
-                                        </button>
-                                    </form> --}}
-                                    <a href="#" class="option2">
+                                <a href="#" class="option2">
                                     Buy Now
                                 </a>
                             </div>
@@ -143,7 +179,7 @@
             </a>
         </div>
     </div>
-</section>
+</section> --}}
 <!-- end product section -->
 
      <!-- arrival section -->

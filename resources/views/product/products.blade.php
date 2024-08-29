@@ -3,7 +3,7 @@
 <table class="table table-striped table-inverse table-responsive">
     <thead class="thead-inverse">
         <tr class="container">
-            <th>Image</th>
+            <th class="pl-4">Image</th>
             <th>Car</th>
             <th>Model</th>
             <th>Title</th>
@@ -36,3 +36,4 @@
             @endforeach
         </tbody>
 </table>
+@include('layouts.footer')

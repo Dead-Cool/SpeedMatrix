@@ -386,19 +386,49 @@ a:focus {
 
 .product_section .box .img-box img {
   max-width: 100%;
-  max-height: 160px;
+  max-height: 180px;
   -webkit-transition: all .3s;
   transition: all .3s;
 }
 
 .product_section .box .detail-box {
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column; /* Make sure items are stacked vertically */
+  align-items: center; /* Center items horizontally */
+}
+
+.product_section .box .detail-box h5, 
+.product_section .box .detail-box h6 {
+  height: 40px; /* Fixed height for consistent sizing */
+  line-height: 40px; /* Center text vertically within the fixed height */
+  margin: 0; /* Remove default margins to avoid extra spacing */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+}
+
+.product_section .box .detail-box h5 {
+  font-size: 18px;
+  color: #333; /* Optional: color for better readability */
+}
+
+.product_section .box .detail-box h6 {
+  font-size: 16px;
+  color: #002c3e;
+  font-weight: 600;
+}
+
+/*
+.product_section .box .detail-box {
+  text-align: center;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 
 .product_section .box .detail-box h5 {
@@ -410,7 +440,7 @@ a:focus {
   margin-top: 10px;
   color: #002c3e;
   font-weight: 600;
-}
+} */
 
 .product_section .box:hover img {
   -webkit-transform: scale(1.1);
@@ -1073,7 +1103,7 @@ form textarea {
     min-height: 150px;
     font-size: 14px;
     margin-bottom: 20px;
-    text-transform: capitalize;
+    /* text-transform: capitalize; */
     line-height: normal;
 }
 
